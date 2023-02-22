@@ -3,10 +3,9 @@ package ru.home.chernyadieva.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import ru.home.chernyadieva.dao.PersonDAO;
+import ru.home.chernyadieva.model.Person;
 
 @Controller
 @RequestMapping("/people")
@@ -26,7 +25,7 @@ public class PeopleController {
      */
     @GetMapping
     public String index(Model model) {
-        model.addAttribute("people",personDAO.index());
+        model.addAttribute("peopleList", personDAO.index());
         return "people/index";
     }
 
@@ -39,7 +38,20 @@ public class PeopleController {
      */
     @GetMapping("/{id}")
     public String show(@PathVariable("id") int id, Model model) {
-        model.addAttribute("person",personDAO.show(id));
+        model.addAttribute("personModel", personDAO.show(id));
         return "people/show";
+    }
+
+    @GetMapping("/new")
+    public String newPerson(@ModelAttribute("personModel") Person person) {
+        // аннотация равносильна model.addAttribute("personModel", new Person());
+        // нам не нужно считывать поля
+        return "people/new";
+    }
+
+    @PostMapping
+    public String create(@ModelAttribute("personModel") Person person) {
+        personDAO.save(person);
+        return "redirect:/people"; //redirect-переход на другую страницу(people)
     }
 }

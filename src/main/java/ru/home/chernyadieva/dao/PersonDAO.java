@@ -5,6 +5,7 @@ import ru.home.chernyadieva.model.Person;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Данный класс будет взаимодействовать с БД (CRUD)
@@ -12,25 +13,30 @@ import java.util.List;
 @Component
 public class PersonDAO {
     private static int PEOPLE_COUNT;
-    private List<Person> people;
+    private List<Person> peopleList;
 
     {
-        people = new ArrayList<>();
+        peopleList = new ArrayList<>();
 
-        people.add(new Person(++PEOPLE_COUNT,"Tom"));
-        people.add(new Person(++PEOPLE_COUNT,"John"));
-        people.add(new Person(++PEOPLE_COUNT,"Silvia"));
-        people.add(new Person(++PEOPLE_COUNT,"Jill"));
+        peopleList.add(new Person(++PEOPLE_COUNT, "Tom"));
+        peopleList.add(new Person(++PEOPLE_COUNT, "John"));
+        peopleList.add(new Person(++PEOPLE_COUNT, "Silvia"));
+        peopleList.add(new Person(++PEOPLE_COUNT, "Jill"));
     }
 
-    public List<Person> index(){
-        return people;
+    public List<Person> index() {
+        return peopleList;
     }
 
-    public Person show(int id){
-        return people.stream()
+    public Person show(int id) {
+        return peopleList.stream()
                 .filter(person -> person.getId() == id)
                 .findAny()
                 .orElse(null);
+    }
+
+    public void save(Person person) {
+        person.setId(++PEOPLE_COUNT);
+        peopleList.add(person);
     }
 }
