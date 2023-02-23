@@ -2,12 +2,16 @@
 <html lang="en" xmlns: th="https://thymeleaf.org">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>All people</title>
+    <title>all people list</title>
 </head>
+
 <body>
 <div th:each="personModel:${peopleList}">
-    <a th:href="@{/people/{id}(id=${personModel.getId()})}"
-       th:text="${personModel.getName()}" a>
+    <a th:href="@{/people/{id}(id=${personModel.getId()})}" th:text="${personModel.getName()}">user</a>
 </div>
+<br/>
+<hr/>
+<a href="/people/new">Create new person</a>
 </body>
+
 </html>

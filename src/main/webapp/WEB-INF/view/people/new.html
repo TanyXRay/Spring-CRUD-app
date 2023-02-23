@@ -2,8 +2,9 @@
 <html lang="en" xmlns: th="https://thymeleaf.org">
 <head>
     <meta http-equiv="Content-Type" content="text/html charset=UTF-8">
-    <title>New Person</title>
+    <title>new person</title>
 </head>
+
 <body>
 <form th:method="POST" th:action="@{/people}" th:object="${personModel}">
     <label for="name">Enter name: </label>
@@ -12,4 +13,5 @@
     <input type="submit" value="Create!"/>
 </form>
 </body>
+
 </html>

@@ -1,14 +1,17 @@
 <!DOCTYPE html>
 <html lang="en" xmlns: th="https://thymeleaf.org">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>Edit Person</title>
 </head>
+
 <body>
 <form th:method="PATCH" th:action="@{/people/{id} (id=${personModel.getId()})}" th:object="${personModel}">
-  <label for="name">Enter name: </label>
-  <input type="text" th:field="*{name}" id="name"/>
-  <br/>
-  <input type="submit" value="Update!"/>
+    <label for="name">Enter name: </label>
+    <input type="text" th:field="*{name}" id="name"/>
+    <br/>
+    <input type="submit" value="Update!"/>
+</form>
 </body>
+
 </html>
