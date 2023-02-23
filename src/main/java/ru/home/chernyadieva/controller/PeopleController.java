@@ -54,4 +54,17 @@ public class PeopleController {
         personDAO.save(person);
         return "redirect:/people"; //redirect-переход на другую страницу(people)
     }
+
+    @GetMapping("/{id}/edit")
+    public String edit(Model model, @PathVariable("id") int id) {
+        model.addAttribute("personModel", personDAO.show(id));
+        return "people/edit";
+    }
+
+    @PatchMapping("/{id}")
+    public String update(@ModelAttribute("personModel") Person person,
+                         @PathVariable("id") int id) {
+        personDAO.update(person, id);
+        return "redirect:/people";
+    }
 }

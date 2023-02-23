@@ -5,7 +5,6 @@ import ru.home.chernyadieva.model.Person;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * Данный класс будет взаимодействовать с БД (CRUD)
@@ -38,5 +37,10 @@ public class PersonDAO {
     public void save(Person person) {
         person.setId(++PEOPLE_COUNT);
         peopleList.add(person);
+    }
+
+    public void update(Person personUpdated, int id) {
+        Person personForUpdated = show(id);
+        personForUpdated.setName(personUpdated.getName());
     }
 }

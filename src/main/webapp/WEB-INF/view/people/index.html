@@ -5,9 +5,9 @@
     <title>All people</title>
 </head>
 <body>
-<div th:each="person:${peopleList}">
-    <a th:href="@{/people/{id}(id=${person.getId()})}"
-       th:text="${person.getName()}" a>
+<div th:each="personModel:${peopleList}">
+    <a th:href="@{/people/{id}(id=${personModel.getId()})}"
+       th:text="${personModel.getName()}" a>
 </div>
 </body>
 </html>
