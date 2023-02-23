@@ -1,8 +1,10 @@
 package ru.home.chernyadieva.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.home.chernyadieva.dao.PersonDAO;
 import ru.home.chernyadieva.model.Person;
@@ -50,7 +52,10 @@ public class PeopleController {
     }
 
     @PostMapping
-    public String create(@ModelAttribute("personModel") Person person) {
+    public String create(@ModelAttribute("personModel") @Valid Person person, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return "people/new";
+        }
         personDAO.save(person);
         return "redirect:/people"; //redirect-переход на другую страницу(people)
     }
@@ -62,8 +67,11 @@ public class PeopleController {
     }
 
     @PatchMapping("/{id}")
-    public String update(@ModelAttribute("personModel") Person person,
+    public String update(@ModelAttribute("personModel") @Valid Person person, BindingResult bindingResult,
                          @PathVariable("id") int id) {
+        if (bindingResult.hasErrors()) {
+            return "people/edit";
+        }
         personDAO.update(person, id);
         return "redirect:/people";
     }

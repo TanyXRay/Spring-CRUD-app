@@ -7,7 +7,8 @@
 
 <body>
 <div th:each="personModel:${peopleList}">
-    <a th:href="@{/people/{id}(id=${personModel.getId()})}" th:text="${personModel.getName()}">user</a>
+    <a th:href="@{/people/{id}(id=${personModel.getId()})}"
+       th:text="${personModel.getName() + ', ' + personModel.getAge() + ' age'}">user</a>
 </div>
 <br/>
 <hr/>
