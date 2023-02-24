@@ -12,6 +12,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class Person {
     private int id;
+
     @NotBlank(message = "Name wasn't to be empty!")
     @Size(min = 2, max = 20, message = "Name should be between 2-20 characters")
     private String name;
