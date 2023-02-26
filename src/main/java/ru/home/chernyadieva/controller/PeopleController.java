@@ -12,7 +12,6 @@ import ru.home.chernyadieva.model.Person;
 @Controller
 @RequestMapping("/people")
 public class PeopleController {
-
     private final PersonDAO personDAO;
 
     @Autowired
