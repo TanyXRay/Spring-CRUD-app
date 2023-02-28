@@ -1,6 +1,5 @@
 package ru.home.chernyadieva.dao;
 
-import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -35,7 +34,7 @@ public class PersonDAO {
     }
 
     public void save(Person person) {
-        jdbcTemplate.update("INSERT INTO Person VALUES(1,?,?,?)",
+        jdbcTemplate.update("INSERT INTO Person(name, age, email) VALUES(?,?,?)",
                 person.getName(),
                 person.getAge(),
                 person.getEmail());
