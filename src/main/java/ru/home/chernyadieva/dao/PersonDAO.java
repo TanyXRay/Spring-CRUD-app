@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import ru.home.chernyadieva.model.Person;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Данный класс будет взаимодействовать с БД (CRUD)
@@ -31,6 +32,19 @@ public class PersonDAO {
                 .stream()
                 .findAny()
                 .orElseThrow();
+    }
+
+    /**
+     * Перегруженный метод для валидатора PersonValidator
+     * @param email
+     * @return
+     */
+    public Optional<Person> show(String email) {
+        return jdbcTemplate.query("SELECT * FROM Person WHERE email=?",
+                        new Object[]{email},
+                        new BeanPropertyRowMapper<>(Person.class))
+                .stream()
+                .findAny();
     }
 
     public void save(Person person) {
