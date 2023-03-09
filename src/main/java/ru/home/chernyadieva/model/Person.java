@@ -34,9 +34,9 @@ public class Person {
     @Column(name = "email")
     private String email;
 
-    //Страна, Город, Индекс (обязательно 6 цифр!) - на англ.
-    @Pattern(regexp = "[A-Z]\\w+, [A-Z]\\w+, \\d{6}",
-            message = "Address is not valid. Address format should be: Country, City, Postal code (6 numbers)")
-    @Column(name = "address")
-    private String address;
+   // //Страна, Город, Индекс (обязательно 6 цифр!) - на англ.
+   // @Pattern(regexp = "[A-Z]\\w+, [A-Z]\\w+, \\d{6}",
+   //         message = "Address is not valid. Address format should be: Country, City, Postal code (6 numbers)")
+   // @Column(name = "address")
+   // private String address;
 }

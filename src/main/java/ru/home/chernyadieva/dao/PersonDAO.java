@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.home.chernyadieva.model.Person;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Данный класс будет взаимодействовать с БД (CRUD)
@@ -28,22 +27,30 @@ public class PersonDAO {
         return session.createQuery("select p FROM Person p", Person.class).getResultList();
     }
 
+    @Transactional(readOnly = true)
     public Person show(int id) {
-        return null;
+        Session session = sessionFactory.getCurrentSession();
+        return session.get(Person.class,id);
     }
 
-    public Optional<Person> show(String email) {
-        return null;
-    }
-
+    @Transactional
     public void save(Person person) {
-
+        Session session = sessionFactory.getCurrentSession();
+        session.persist(person);
     }
 
+    @Transactional
     public void update(Person personUpdated, int id) {
-
+        Session session = sessionFactory.getCurrentSession();
+        Person personToBeUpdated = session.get(Person.class, id);
+        personToBeUpdated.setName(personUpdated.getName());
+        personToBeUpdated.setAge(personUpdated.getAge());
+        personToBeUpdated.setEmail(personUpdated.getEmail());
     }
 
+    @Transactional
     public void delete(int id) {
+        Session session = sessionFactory.getCurrentSession();
+        session.remove(session.get(Person.class,id));
     }
 }
