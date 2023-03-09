@@ -7,8 +7,11 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.orm.hibernate5.HibernateTransactionManager;
+import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -17,18 +20,19 @@ import org.thymeleaf.spring6.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.spring6.view.ThymeleafViewResolver;
 
 import javax.sql.DataSource;
-import java.util.Objects;
+import java.util.Properties;
 
 /**
  * Класс конфигурация вместо файла applicationContextMVC.xml
  */
 @Configuration
+@PropertySource("classpath:hibernate.properties")
 @ComponentScan("ru.home.chernyadieva") //ищет контроллеры в указанной директории
 @EnableWebMvc
-@PropertySource("classpath:database.properties")
+@EnableTransactionManagement
 public class SpringConfig implements WebMvcConfigurer {
     private final ApplicationContext applicationContext;
-    private final Environment environment;
+    private final Environment environment; // благодаря ему сможем прочитать конфиг файл hibernate
 
     /**
      * Внедряем ApplicationContext, Environment
@@ -49,6 +53,7 @@ public class SpringConfig implements WebMvcConfigurer {
         templateResolver.setPrefix("/WEB-INF/view/");
         templateResolver.setSuffix(".html");
         templateResolver.setCharacterEncoding("UTF-8");
+
         return templateResolver;
     }
 
@@ -58,6 +63,7 @@ public class SpringConfig implements WebMvcConfigurer {
 
         templateEngine.setTemplateResolver(templateResolver());
         templateEngine.setEnableSpringELCompiler(true);
+
         return templateEngine;
     }
 
@@ -76,7 +82,7 @@ public class SpringConfig implements WebMvcConfigurer {
     }
 
     /**
-     * Метод передачи данных сервера jdbc
+     * Метод передачи данных сервера hibernate
      *
      * @return
      */
@@ -84,15 +90,57 @@ public class SpringConfig implements WebMvcConfigurer {
     public DataSource dataSource() {
         var dataSource = new DriverManagerDataSource();
 
-        dataSource.setDriverClassName((Objects.requireNonNull(environment.getProperty("driver"))));
-        dataSource.setUrl(environment.getProperty("url"));
-        dataSource.setUsername(environment.getProperty("user_name"));
-        dataSource.setPassword(environment.getProperty("password"));
+        dataSource.setDriverClassName(environment.getRequiredProperty("hibernate.driver_class"));
+        dataSource.setUrl(environment.getRequiredProperty("hibernate.connection.url"));
+        dataSource.setUsername(environment.getRequiredProperty("hibernate.connection.username"));
+        dataSource.setPassword(environment.getRequiredProperty("hibernate.connection.password"));
+
         return dataSource;
     }
 
+    // @Bean
+    // public JdbcTemplate jdbcTemplate() {
+    //     return new JdbcTemplate(dataSource());
+    // }
+
+    /**
+     * Метод чтения настройки для hibernate из файла
+     *
+     * @return
+     */
+    private Properties hibernateProperties() {
+        Properties hibernateProperties = new Properties();
+        hibernateProperties.put("hibernate.dialect", environment.getRequiredProperty("hibernate.dialect"));
+        hibernateProperties.put("hibernate.show_sql", environment.getRequiredProperty("hibernate.show_sql"));
+
+        return hibernateProperties;
+    }
+
+    /**
+     * Метод по созданию фабрики сессий для работы с hibernate
+     *
+     * @return
+     */
     @Bean
-    public JdbcTemplate jdbcTemplate() {
-        return new JdbcTemplate(dataSource());
+    public LocalSessionFactoryBean sessionFactory() {
+        LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
+        sessionFactory.setDataSource(dataSource());
+        sessionFactory.setPackagesToScan("ru.home.chernyadieva");
+        sessionFactory.setHibernateProperties(hibernateProperties());
+
+        return sessionFactory;
+    }
+
+    /**
+     * Метод по созданию транзакций для работы с hibernate
+     *
+     * @return
+     */
+    @Bean
+    public PlatformTransactionManager hibernateTransactionManager() {
+        var transactionManager = new HibernateTransactionManager();
+        transactionManager.setSessionFactory(sessionFactory().getObject());
+
+        return transactionManager;
     }
 }

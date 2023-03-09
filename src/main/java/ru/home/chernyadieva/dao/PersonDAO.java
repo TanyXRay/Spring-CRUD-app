@@ -1,9 +1,10 @@
 package ru.home.chernyadieva.dao;
 
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import ru.home.chernyadieva.model.Person;
 
 import java.util.List;
@@ -14,58 +15,35 @@ import java.util.Optional;
  */
 @Component
 public class PersonDAO {
-    private final JdbcTemplate jdbcTemplate;
+    private final SessionFactory sessionFactory;
 
     @Autowired
-    public PersonDAO(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+    public PersonDAO(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
     }
 
+    @Transactional(readOnly = true)
     public List<Person> index() {
-        return jdbcTemplate.query("SELECT * FROM Person", new BeanPropertyRowMapper<>(Person.class));
+        Session session = sessionFactory.getCurrentSession();
+        return session.createQuery("select p FROM Person p", Person.class).getResultList();
     }
 
     public Person show(int id) {
-        return jdbcTemplate.query("SELECT * FROM Person WHERE id=?",
-                        new BeanPropertyRowMapper<>(Person.class),
-                        new Object[]{id})
-                .stream()
-                .findAny()
-                .orElseThrow();
+        return null;
     }
 
-    /**
-     * Перегруженный метод для валидатора PersonValidator
-     *
-     * @param email
-     * @return
-     */
     public Optional<Person> show(String email) {
-        return jdbcTemplate.query("SELECT * FROM Person WHERE email=?",
-                        new BeanPropertyRowMapper<>(Person.class),
-                        new Object[]{email})
-                .stream()
-                .findAny();
+        return null;
     }
 
     public void save(Person person) {
-        jdbcTemplate.update("INSERT INTO Person(name, age, email, address) VALUES(?,?,?,?)",
-                person.getName(),
-                person.getAge(),
-                person.getEmail(),
-                person.getAddress());
+
     }
 
     public void update(Person personUpdated, int id) {
-        jdbcTemplate.update("UPDATE Person SET name=?, age=?, email=?, address=? WHERE id=?",
-                personUpdated.getName(),
-                personUpdated.getAge(),
-                personUpdated.getEmail(),
-                personUpdated.getAddress(),
-                id);
+
     }
 
     public void delete(int id) {
-        jdbcTemplate.update("DELETE FROM Person WHERE id=?", id);
     }
 }
