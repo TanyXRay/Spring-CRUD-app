@@ -6,6 +6,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.home.chernyadieva.model.Person;
+import ru.home.chernyadieva.service.ItemService;
 import ru.home.chernyadieva.service.PeopleService;
 
 import javax.validation.Valid;
@@ -14,10 +15,12 @@ import javax.validation.Valid;
 @RequestMapping("/people")
 public class PeopleController {
     private final PeopleService peopleService;
+    private final ItemService itemService;
 
     @Autowired
-    public PeopleController(PeopleService peopleService) {
+    public PeopleController(PeopleService peopleService, ItemService itemService) {
         this.peopleService = peopleService;
+        this.itemService = itemService;
     }
 
     /**
@@ -28,6 +31,10 @@ public class PeopleController {
     @GetMapping
     public String index(Model model) {
         model.addAttribute("peopleList", peopleService.findAll());
+        itemService.findByItemName("молоко");
+        itemService.findByOwner(peopleService.findAll().get(0));
+        peopleService.test();
+
         return "people/index";
     }
 
