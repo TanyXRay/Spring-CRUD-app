@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.home.chernyadieva.model.Person;
 import ru.home.chernyadieva.repository.PeopleRepository;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,6 +32,7 @@ public class PeopleService {
 
     @Transactional
     public void save(Person person) {
+        person.setCreatedAt(new Date());
         peopleRepository.save(person);
     }
 
@@ -44,6 +46,7 @@ public class PeopleService {
     public void delete(int id) {
         peopleRepository.deleteById(id);
     }
+
 
     public void test() {
         System.out.println("test debug in hibernate transaction");

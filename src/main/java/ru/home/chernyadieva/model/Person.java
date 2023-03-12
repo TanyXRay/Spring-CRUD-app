@@ -5,8 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.*;
+import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -38,6 +40,16 @@ public class Person {
 
     @OneToMany(mappedBy = "owner", cascade = CascadeType.PERSIST)
     private List<Item> itemList;
+
+    @NotBlank(message = "Date of birth may not be null!")
+    @Temporal(TemporalType.DATE)
+    @DateTimeFormat(pattern = "dd/MM/yyyy")
+    @Column(name = "date_of_birth")
+    private Date dateOfBirth;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "created_at")
+    private Date createdAt;
 
     // //Страна, Город, Индекс (обязательно 6 цифр!) - на англ.
     // @Pattern(regexp = "[A-Z]\\w+, [A-Z]\\w+, \\d{6}",
